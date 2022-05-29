@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import MeetingFooter from "../MeetingFooter/MeetingFooter.component";
 import Participants from "../Participants/Participants.component";
 import "./MainScreen.css";
@@ -7,6 +7,16 @@ import { setMainStream, updateUser } from "../../store/actioncreator";
 
 const MainScreen = (props) => {
   const participantRef = useRef(props.participants);
+  /**
+ * admin audio controll
+ */
+  const [action, setAction] = useState(null);
+  /**
+   * admin video controll
+   */
+  const [actionVideo, setActionVideo] = useState(null);
+
+  // console.log("form main screen")
 
   const onMicClick = (micEnabled) => {
     if (props.stream) {
@@ -21,8 +31,12 @@ const MainScreen = (props) => {
     }
   };
 
+
+
+
   useEffect(() => {
     participantRef.current = props.participants;
+    console.log("action", action)
   }, [props.participants]);
 
   const updateStream = (stream) => {
@@ -75,11 +89,13 @@ const MainScreen = (props) => {
   return (
     <div className="wrapper">
       <div className="main-screen">
-        <Participants />
+        <Participants setAction={setAction} setActionVideo={setActionVideo} />
       </div>
 
       <div className="footer">
         <MeetingFooter
+          handelControllAudio={action} // add
+          handelControllVideo={actionVideo} // add
           onScreenClick={onScreenClick}
           onMicClick={onMicClick}
           onVideoClick={onVideoClick}

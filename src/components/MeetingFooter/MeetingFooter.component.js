@@ -10,22 +10,44 @@ import {
 import ReactTooltip from "react-tooltip";
 import "./MeetingFooter.css";
 const MeetingFooter = (props) => {
+
+  console.log('recive action audio -->', props.handelControllAudio)
+  console.log('recive action video -->', props.handelControllVideo)
+  const [smic, setSmic] = useState(false)
+  const [svideo, setSvideo] = useState(false)
   const [streamState, setStreamState] = useState({
-    mic: true,
+    mic: false,
     video: false,
     screen: false,
   });
+
+
   const micClick = () => {
-    
+    setSmic(!smic)
     setStreamState((currentState) => {
       return {
         ...currentState,
         mic: !currentState.mic,
+
       };
-    });
+    })
+
+
+
+  };
+  const demoll = () => {
+    setStreamState({
+      ...streamState,
+      mic: !streamState.mic,
+
+    })
   };
 
+
+
   const onVideoClick = () => {
+    setSvideo(!svideo)
+
     setStreamState((currentState) => {
       return {
         ...currentState,
@@ -46,30 +68,52 @@ const MeetingFooter = (props) => {
       };
     });
   };
+  /**
+   * mic controll from admin 
+   */
   useEffect(() => {
+    setSmic(props.handelControllAudio)
+    props.onMicClick(props.handelControllAudio);
+
+
+    setSvideo(props.handelControllVideo)
+    props.onVideoClick(props.handelControllVideo);
+
+  }, [props.handelControllAudio, props.handelControllVideo]);
+
+
+
+  useEffect(() => {
+
     props.onMicClick(streamState.mic);
+
   }, [streamState.mic]);
+
   useEffect(() => {
+
     props.onVideoClick(streamState.video);
+
   }, [streamState.video]);
+
+
   return (
     <div className="meeting-footer">
       <div
-        className={"meeting-icons " + (!streamState.mic ? "active" : "")}
+        className={"meeting-icons " + (!smic ? "active" : "")}
         data-tip={streamState.mic ? "Mute Audio" : "Unmute Audio"}
         onClick={micClick}
       >
         <FontAwesomeIcon
-          icon={!streamState.mic ? faMicrophoneSlash : faMicrophone}
+          icon={!smic ? faMicrophoneSlash : faMicrophone}
           title="Mute"
         />
       </div>
       <div
-        className={"meeting-icons " + (!streamState.video ? "active" : "")}
-        data-tip={streamState.video ? "Hide Video" : "Show Video"}
+        className={"meeting-icons " + (!svideo ? "active" : "")}
+        data-tip={svideo ? "Hide Video" : "Show Video"}
         onClick={onVideoClick}
       >
-        <FontAwesomeIcon icon={!streamState.video ? faVideoSlash : faVideo} />
+        <FontAwesomeIcon icon={!svideo ? faVideoSlash : faVideo} />
       </div>
       <div
         className="meeting-icons"

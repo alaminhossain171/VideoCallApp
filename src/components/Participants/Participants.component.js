@@ -11,13 +11,15 @@ const Participants = (props) => {
       videoRef.current.srcObject = props.stream;
       videoRef.current.muted = true;
     }
+
+    console.log("current user--->", props.currentUser)
   }, [props.currentUser, props.stream]);
 
   const currentUser = props.currentUser
     ? Object.values(props.currentUser)[0]
     : null;
 
-    
+
   let gridCol =
     participantKey.length === 1 ? 1 : participantKey.length <= 4 ? 2 : 4;
   const gridColSize = participantKey.length <= 4 ? 1 : 2;
@@ -31,12 +33,25 @@ const Participants = (props) => {
     return currentParticipant.screen;
   });
 
+
   if (screenPresenter) {
     gridCol = 1;
     gridRowSize = 2;
   }
   const participants = participantKey.map((element, index) => {
     const currentParticipant = props.participants[element];
+
+    /**
+     * audio video admin controll
+     */
+    if (currentParticipant.name == currentUser.name) {
+      props.setAction(currentParticipant.audio)
+      props.setActionVideo(currentParticipant.video)
+
+    } else {
+      //props.setAction(false)
+    }
+    console.log("current perticepent--->", currentParticipant)
     const isCurrentUser = currentParticipant.currentUser;
     if (isCurrentUser) {
       return null;
@@ -57,6 +72,7 @@ const Participants = (props) => {
     }
 
     return (
+
       <Participant
         key={curentIndex}
         currentParticipant={currentParticipant}
